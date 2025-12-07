@@ -20,6 +20,7 @@ export default function Admin() {
   const onChange = (key) => (e) =>
     setForm((prev) => ({ ...prev, [key]: e.target.value }));
 
+  // 创建应用
   async function createApp() {
     try {
       const res = await axios.post(`${API_BASE}/create`, form);
@@ -31,6 +32,7 @@ export default function Admin() {
     }
   }
 
+  // 上传文件（关键：这里改成更详细的错误信息）
   async function uploadFile() {
     if (!appId) return setLog("请先创建 App，拿到 appId");
     if (!file) return setLog("请先选择文件");
@@ -48,7 +50,18 @@ export default function Admin() {
       setLog(`✅ 上传成功：${res.data.url}`);
     } catch (err) {
       console.error(err);
-      setLog("❌ 上传失败：" + (err.response?.data?.error || err.message));
+      if (err.response) {
+        // 后端有返回 HTTP 状态码
+        setLog(
+          "❌ 上传失败（有响应）：" +
+            err.response.status +
+            " " +
+            JSON.stringify(err.response.data)
+        );
+      } else {
+        // 纯网络层错误，比如连不到后端
+        setLog("❌ 上传失败（网络层）：" + err.message);
+      }
     }
   }
 
