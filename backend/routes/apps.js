@@ -55,3 +55,18 @@ router.get("/:id", async (req, res) => {
 });
 
 module.exports = router;
+// 更新应用
+router.put("/:id", async (req, res) => {
+  try {
+    const app = await App.findByPk(req.params.id);
+    if (!app) {
+      return res.status(404).json({ error: "app not found" });
+    }
+
+    await app.update(req.body);
+    res.json({ app });
+  } catch (e) {
+    console.error("update app error:", e);
+    res.status(500).json({ error: e.message || "update failed" });
+  }
+});
