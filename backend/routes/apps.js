@@ -1,7 +1,7 @@
 
 const express = require("express");
 const multer = require("multer");
-const uploadToR2 = require("../uploadToR2");
+const uploadToGitHub = require("../uploadToGitHub");
 const { App } = require("../models");
 
 const router = express.Router();
@@ -23,7 +23,7 @@ router.post("/upload", upload.single("file"), async (req, res) => {
 
     console.log("Uploading file for app:", appId, "type:", type, "name:", req.file.originalname);
 
-    const url = await uploadToR2(req.file, type);
+    const url = await uploadToGitHub(req.file, type);
 
     if (type === "apk") app.apkUrl = url;
     if (type === "icon") app.iconUrl = url;
