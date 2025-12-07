@@ -16,7 +16,9 @@ export default function Admin() {
     reviewsCount: "100",
     downloadsLabel: "2M+",
     sizeLabel: "25 MB",
-    updatedAtLabel: ""
+    updatedAtLabel: "",
+    landingDomain: "",
+    note: ""
   });
   const [appId, setAppId] = useState("");
   const [fileType, setFileType] = useState("apk");
