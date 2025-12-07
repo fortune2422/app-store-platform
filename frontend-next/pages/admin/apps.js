@@ -121,31 +121,29 @@ export default function AppsList() {
                         : ""}
                     </td>
                     <td>
-                      <td>
-  <button
-    className="btn primary small"
-    onClick={() => {
-      window.open(`/app/${app.id}`, "_blank");
-    }}
-  >
-    打开落地页
-  </button>
+                      <button
+                        className="btn primary small"
+                        onClick={() => {
+                          window.open(`/app/${app.id}`, "_blank");
+                        }}
+                      >
+                        打开落地页
+                      </button>
 
-  <button
-    className="btn secondary small"
-    onClick={() => copyLink(app.id)}
-    style={{ marginLeft: 8 }}
-  >
-    复制链接
-  </button>
+                      <button
+                        className="btn secondary small"
+                        onClick={() => copyToClipboard(landingUrl)}
+                        style={{ marginLeft: 8 }}
+                      >
+                        复制链接
+                      </button>
 
-  <Link href={`/admin?id=${app.id}`} legacyBehavior>
-    <a style={{ marginLeft: 8 }}>
-      <button className="btn secondary small">编辑</button>
-    </a>
-  </Link>
-</td>
-
+                      <Link href={`/admin?id=${app.id}`} legacyBehavior>
+                        <a style={{ marginLeft: 8 }}>
+                          <button className="btn secondary small">编辑</button>
+                        </a>
+                      </Link>
+                    </td>
                   </tr>
                 );
               })}
