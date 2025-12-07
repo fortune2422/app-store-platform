@@ -27,6 +27,8 @@ router.post("/upload", upload.single("file"), async (req, res) => {
 
     if (type === "apk") app.apkUrl = url;
     if (type === "icon") app.iconUrl = url;
+    if (type === "desktopIcon") app.desktopIconUrl = url;
+    if (type === "banner") app.bannerUrl = url;
     if (type === "screenshot") {
       app.screenshots = [...(app.screenshots || []), url];
     }
