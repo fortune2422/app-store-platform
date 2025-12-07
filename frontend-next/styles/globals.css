@@ -1,0 +1,19 @@
+
+body { font-family: sans-serif; background:#f5f6f7; }
+.container {
+  max-width: 900px;
+  background:#fff;
+  padding: 32px;
+  margin:40px auto;
+  border-radius:8px;
+}
+.hero { display:flex; gap:20px; }
+.icon { width:96px; height:96px; border-radius:16px; }
+.btn {
+  display:inline-block;
+  background:#1677ff;
+  color:#fff;
+  padding:10px 16px;
+  border-radius:8px;
+}
+.shots img { width:160px; margin-right:10px; }
