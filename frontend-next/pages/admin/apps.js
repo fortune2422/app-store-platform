@@ -1,6 +1,7 @@
 // frontend-next/pages/admin/apps.js
 import { useEffect, useState } from "react";
 import axios from "axios";
+import AdminLayout from "../../components/AdminLayout";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "";
@@ -46,8 +47,9 @@ export default function AppsList() {
   }
 
   return (
-    <div className="container">
-      <h1>应用管理列表</h1>
+    <AdminLayout active="list">
+      <div className="container">
+        <h1>应用管理列表</h1>
       <p>
         在这里可以看到所有已创建的应用，每条都有自己的落地页链接和 APK
         状态。
