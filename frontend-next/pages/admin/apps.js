@@ -50,104 +50,104 @@ export default function AppsList() {
     <AdminLayout active="list">
       <div className="container">
         <h1>应用管理列表</h1>
-      <p>
-        在这里可以看到所有已创建的应用，每条都有自己的落地页链接和 APK
-        状态。
-      </p>
+        <p>
+          在这里可以看到所有已创建的应用，每条都有自己的落地页链接和 APK 状态。
+        </p>
 
-      {loading ? (
-        <p>加载中...</p>
-      ) : (
-        <table className="apps-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>图标</th>
-              <th>名称 / 编号</th>
-              <th>落地页域名 / 链接</th>
-              <th>APK</th>
-              <th>创建时间</th>
-              <th>操作</th>
-            </tr>
-          </thead>
-          <tbody>
-            {apps.map((app) => {
-              const landingUrl = makeLandingUrl(app);
-              return (
-                <tr key={app.id}>
-                  <td>{app.id}</td>
-                  <td>
-                    {app.iconUrl && (
-                      <img
-                        src={app.iconUrl}
-                        alt={app.name}
-                        style={{
-                          width: 40,
-                          height: 40,
-                          borderRadius: 8,
-                          objectFit: "cover"
-                        }}
-                      />
-                    )}
-                  </td>
-                  <td>
-                    <div style={{ fontWeight: 600 }}>{app.name}</div>
-                    <div style={{ fontSize: 12, color: "#64748b" }}>
-                      {app.code || ""}
-                    </div>
-                  </td>
-                  <td>
-                    <div style={{ fontSize: 13 }}>
-                      {app.landingDomain || "(未单独配置域名)"}
-                    </div>
-                    <div style={{ fontSize: 12, color: "#64748b" }}>
-                      {landingUrl}
-                    </div>
-                  </td>
-                  <td>
-                    {app.apkUrl ? (
-                      <span style={{ color: "green", fontSize: 13 }}>
-                        已上传
-                      </span>
-                    ) : (
-                      <span style={{ color: "red", fontSize: 13 }}>
-                        未上传
-                      </span>
-                    )}
-                  </td>
-                  <td style={{ fontSize: 12, color: "#64748b" }}>
-                    {app.createdAt
-                      ? new Date(app.createdAt).toLocaleString()
-                      : ""}
-                  </td>
-                  <td>
-                    <a
-                      className="btn"
-                      href={landingUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      style={{ marginRight: 8 }}
-                    >
-                      打开落地页
-                    </a>
-                    <button
-                      className="btn"
-                      onClick={() => copyToClipboard(landingUrl)}
-                    >
-                      复制链接
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      )}
+        {loading ? (
+          <p>加载中...</p>
+        ) : (
+          <table className="apps-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>图标</th>
+                <th>名称 / 编号</th>
+                <th>落地页域名 / 链接</th>
+                <th>APK</th>
+                <th>创建时间</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              {apps.map((app) => {
+                const landingUrl = makeLandingUrl(app);
+                return (
+                  <tr key={app.id}>
+                    <td>{app.id}</td>
+                    <td>
+                      {app.iconUrl && (
+                        <img
+                          src={app.iconUrl}
+                          alt={app.name}
+                          style={{
+                            width: 40,
+                            height: 40,
+                            borderRadius: 8,
+                            objectFit: "cover"
+                          }}
+                        />
+                      )}
+                    </td>
+                    <td>
+                      <div style={{ fontWeight: 600 }}>{app.name}</div>
+                      <div style={{ fontSize: 12, color: "#64748b" }}>
+                        {app.code || ""}
+                      </div>
+                    </td>
+                    <td>
+                      <div style={{ fontSize: 13 }}>
+                        {app.landingDomain || "(未单独配置域名)"}
+                      </div>
+                      <div style={{ fontSize: 12, color: "#64748b" }}>
+                        {landingUrl}
+                      </div>
+                    </td>
+                    <td>
+                      {app.apkUrl ? (
+                        <span style={{ color: "green", fontSize: 13 }}>
+                          已上传
+                        </span>
+                      ) : (
+                        <span style={{ color: "red", fontSize: 13 }}>
+                          未上传
+                        </span>
+                      )}
+                    </td>
+                    <td style={{ fontSize: 12, color: "#64748b" }}>
+                      {app.createdAt
+                        ? new Date(app.createdAt).toLocaleString()
+                        : ""}
+                    </td>
+                    <td>
+                      <a
+                        className="btn"
+                        href={landingUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{ marginRight: 8 }}
+                      >
+                        打开落地页
+                      </a>
+                      <button
+                        className="btn"
+                        onClick={() => copyToClipboard(landingUrl)}
+                      >
+                        复制链接
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        )}
 
-      <section style={{ marginTop: 24 }}>
-        <h2>日志</h2>
-        <pre>{log}</pre>
-      </section>
-    </div>
+        <section style={{ marginTop: 24 }}>
+          <h2>日志</h2>
+          <pre>{log}</pre>
+        </section>
+      </div>
+    </AdminLayout>
   );
 }
