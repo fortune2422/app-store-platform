@@ -121,3 +121,20 @@ body { font-family: sans-serif; background:#f5f6f7; }
 .store-section h2 {
   margin-bottom: 8px;
 }
+.apps-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+  font-size: 14px;
+}
+
+.apps-table th,
+.apps-table td {
+  border-bottom: 1px solid #e2e8f0;
+  padding: 8px 12px;
+  text-align: left;
+}
+
+.apps-table tbody tr:hover {
+  background: #f8fafc;
+}
