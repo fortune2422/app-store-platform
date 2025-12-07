@@ -12,18 +12,35 @@ router.post("/create", async (req, res) => {
   res.json({ app });
 });
 
+// backend/routes/apps.js
 router.post("/upload", upload.single("file"), async (req, res) => {
-  const { appId, type } = req.body;
-  const app = await App.findByPk(appId);
-  if (!app) return res.status(404).end();
+  try {
+    const { appId, type } = req.body;
+    const app = await App.findByPk(appId);
+    if (!app) return res.status(404).json({ error: "app not found" });
 
-  const url = await uploadToR2(req.file, type);
-  if (type === "apk") app.apkUrl = url;
-  if (type === "icon") app.iconUrl = url;
-  if (type === "screenshot") app.screenshots = [...app.screenshots, url];
-  await app.save();
-  res.json({ url });
+    if (!req.file) return res.status(400).json({ error: "no file" });
+
+    console.log("Uploading file for app:", appId, "type:", type, "name:", req.file.originalname);
+
+    const url = await uploadToR2(req.file, type);
+
+    if (type === "apk") app.apkUrl = url;
+    if (type === "icon") app.iconUrl = url;
+    if (type === "screenshot") {
+      app.screenshots = [...(app.screenshots || []), url];
+    }
+
+    await app.save();
+    console.log("Upload success, url =", url);
+
+    res.json({ url, app });
+  } catch (e) {
+    console.error("Upload error:", e);
+    res.status(500).json({ error: e.message || "upload failed" });
+  }
 });
+
 
 router.get("/list", async (req, res) => {
   const apps = await App.findAll();
