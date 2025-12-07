@@ -185,3 +185,197 @@ body { font-family: sans-serif; background:#f5f6f7; }
 .admin-main {
   padding: 24px 40px 40px;
 }
+/* 通用后台页面布局 */
+.admin-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 0 40px;
+}
+
+.admin-page-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+/* 左右两列布局 */
+.admin-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1.6fr);
+  gap: 16px;
+}
+
+.admin-column {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 卡片 */
+.card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px 20px 18px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+  border: 1px solid #e2e8f0;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+/* 表单布局 */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 16px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.form-field-full {
+  grid-column: 1 / -1;
+}
+
+.field-label {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.field-input,
+.field-textarea {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  padding: 8px 10px;
+  font-size: 13px;
+  outline: none;
+  background: #f8fafc;
+}
+
+.field-input:focus,
+.field-textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.2);
+  background: #ffffff;
+}
+
+.field-textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+/* 按钮和辅助文字 */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: none;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+}
+
+.form-actions {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.muted {
+  font-size: 12px;
+  color: #64748b;
+}
+
+/* 日志区域 */
+.log-box {
+  font-size: 12px;
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  min-height: 60px;
+  white-space: pre-wrap;
+}
+
+/* 顶部 AdminLayout 样式（如果之前没加可以一起用） */
+.admin-layout {
+  min-height: 100vh;
+  background: #f1f5f9;
+}
+
+.admin-header {
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 12px 40px;
+}
+
+.admin-header-left {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.admin-logo {
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.admin-nav {
+  display: flex;
+  gap: 16px;
+}
+
+.admin-nav-link {
+  font-size: 14px;
+  color: #cbd5f5;
+  text-decoration: none;
+  padding: 6px 10px;
+  border-radius: 999px;
+}
+
+.admin-nav-link:hover {
+  background: rgba(148, 163, 184, 0.25);
+}
+
+.admin-nav-link.active {
+  background: #2563eb;
+  color: #fff;
+}
+
+.admin-main {
+  padding: 0 40px 40px;
+}
+
+/* 如果列表页面用 apps-table，就继续沿用 */
+.apps-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+  font-size: 14px;
+}
+
+.apps-table th,
+.apps-table td {
+  border-bottom: 1px solid #e2e8f0;
+  padding: 8px 12px;
+  text-align: left;
+}
+
+.apps-table tbody tr:hover {
+  background: #f8fafc;
+}
