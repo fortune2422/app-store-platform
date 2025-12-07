@@ -1,7 +1,7 @@
 // frontend-next/pages/admin.js
 import { useState } from "react";
 import axios from "axios";
-import AdminLayout from "../components/AdminLayout"; // ✅ 新增
+import AdminLayout from "../components/AdminLayout";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "";
 
@@ -34,7 +34,9 @@ export default function Admin() {
       const payload = {
         ...form,
         rating: form.rating ? parseFloat(form.rating) : null,
-        reviewsCount: form.reviewsCount ? parseInt(form.reviewsCount, 10) : null
+        reviewsCount: form.reviewsCount
+          ? parseInt(form.reviewsCount, 10)
+          : null
       };
       const res = await axios.post(`${API_BASE}/create`, payload);
       setAppId(res.data.app.id);
@@ -77,126 +79,201 @@ export default function Admin() {
 
   return (
     <AdminLayout active="create">
-      <div className="container">
-        <h1>后台管理 / 新增落地页</h1>
+      <div className="admin-page">
+        <h1 className="admin-page-title">后台管理 / 新增落地页</h1>
 
-        <section style={{ marginTop: 24 }}>
-          <h2>1. 基础信息</h2>
-          <input
-            placeholder="显示名称（如：GO606-33）"
-            value={form.name}
-            onChange={onChange("name")}
-          />
-          <br />
-          <input
-            placeholder="内部代码（可选，如：GO606-33）"
-            value={form.code}
-            onChange={onChange("code")}
-          />
-          <br />
-          <input
-            placeholder="包名（可选）"
-            value={form.packageName}
-            onChange={onChange("packageName")}
-          />
-          <br />
-          <input
-            placeholder="版本号（如：1.0.0）"
-            value={form.version}
-            onChange={onChange("version")}
-          />
-          <br />
-          <textarea
-            placeholder="应用描述（About this app）"
-            value={form.description}
-            onChange={onChange("description")}
-          />
-        </section>
+        <div className="admin-grid">
+          {/* 左侧：基础信息 + 商店信息 */}
+          <div className="admin-column">
+            <div className="card">
+              <h2 className="section-title">1. 基础信息</h2>
+              <div className="form-grid">
+                <div className="form-field">
+                  <label className="field-label">显示名称</label>
+                  <input
+                    className="field-input"
+                    placeholder="如：GO606-33"
+                    value={form.name}
+                    onChange={onChange("name")}
+                  />
+                </div>
+                <div className="form-field">
+                  <label className="field-label">内部代码（可选）</label>
+                  <input
+                    className="field-input"
+                    placeholder="如：GO606-33"
+                    value={form.code}
+                    onChange={onChange("code")}
+                  />
+                </div>
+                <div className="form-field">
+                  <label className="field-label">包名（可选）</label>
+                  <input
+                    className="field-input"
+                    placeholder="如：com.go606.app"
+                    value={form.packageName}
+                    onChange={onChange("packageName")}
+                  />
+                </div>
+                <div className="form-field">
+                  <label className="field-label">版本号</label>
+                  <input
+                    className="field-input"
+                    placeholder="如：1.0.0"
+                    value={form.version}
+                    onChange={onChange("version")}
+                  />
+                </div>
+                <div className="form-field form-field-full">
+                  <label className="field-label">应用描述</label>
+                  <textarea
+                    className="field-textarea"
+                    placeholder="About this app..."
+                    value={form.description}
+                    onChange={onChange("description")}
+                  />
+                </div>
+              </div>
+            </div>
 
-        <section style={{ marginTop: 24 }}>
-          <h2>2. 商店信息</h2>
-          <input
-            placeholder="开发者名称（如：george）"
-            value={form.developerName}
-            onChange={onChange("developerName")}
-          />
-          <br />
-          <input
-            placeholder="评分（如：4.8）"
-            value={form.rating}
-            onChange={onChange("rating")}
-          />
-          <br />
-          <input
-            placeholder="评价数量（如：29）"
-            value={form.reviewsCount}
-            onChange={onChange("reviewsCount")}
-          />
-          <br />
-          <input
-            placeholder="下载量展示（如：2M+）"
-            value={form.downloadsLabel}
-            onChange={onChange("downloadsLabel")}
-          />
-          <br />
-          <input
-            placeholder="应用大小（如：25 MB）"
-            value={form.sizeLabel}
-            onChange={onChange("sizeLabel")}
-          />
-          <br />
-          <input
-            placeholder="更新时间展示（如：Dec 7, 2025）"
-            value={form.updatedAtLabel}
-            onChange={onChange("updatedAtLabel")}
-          />
-          <br />
-          {/* 落地页域名 */}
-          <input
-            placeholder="落地页域名（如：go606-33.playxxx.xyz）"
-            value={form.landingDomain}
-            onChange={onChange("landingDomain")}
-          />
-          <br />
-          {/* 备注 */}
-          <textarea
-            placeholder="备注（内部说明，可选）"
-            value={form.note}
-            onChange={onChange("note")}
-          />
-          <br />
-          <button className="btn" onClick={createApp}>
-            创建 / 更新 App
-          </button>
-          {appId && <p>当前 App ID：{appId}</p>}
-        </section>
+            <div className="card" style={{ marginTop: 16 }}>
+              <h2 className="section-title">2. 商店信息</h2>
+              <div className="form-grid">
+                <div className="form-field">
+                  <label className="field-label">开发者名称</label>
+                  <input
+                    className="field-input"
+                    placeholder="如：george"
+                    value={form.developerName}
+                    onChange={onChange("developerName")}
+                  />
+                </div>
+                <div className="form-field">
+                  <label className="field-label">评分</label>
+                  <input
+                    className="field-input"
+                    placeholder="如：4.8"
+                    value={form.rating}
+                    onChange={onChange("rating")}
+                  />
+                </div>
+                <div className="form-field">
+                  <label className="field-label">评价数量</label>
+                  <input
+                    className="field-input"
+                    placeholder="如：28921"
+                    value={form.reviewsCount}
+                    onChange={onChange("reviewsCount")}
+                  />
+                </div>
+                <div className="form-field">
+                  <label className="field-label">下载量展示</label>
+                  <input
+                    className="field-input"
+                    placeholder="如：2M+"
+                    value={form.downloadsLabel}
+                    onChange={onChange("downloadsLabel")}
+                  />
+                </div>
+                <div className="form-field">
+                  <label className="field-label">应用大小</label>
+                  <input
+                    className="field-input"
+                    placeholder="如：25 MB"
+                    value={form.sizeLabel}
+                    onChange={onChange("sizeLabel")}
+                  />
+                </div>
+                <div className="form-field">
+                  <label className="field-label">更新时间展示</label>
+                  <input
+                    className="field-input"
+                    placeholder="如：Dec 7, 2025"
+                    value={form.updatedAtLabel}
+                    onChange={onChange("updatedAtLabel")}
+                  />
+                </div>
+                <div className="form-field form-field-full">
+                  <label className="field-label">落地页域名</label>
+                  <input
+                    className="field-input"
+                    placeholder="如：go606-33.playxxx.xyz"
+                    value={form.landingDomain}
+                    onChange={onChange("landingDomain")}
+                  />
+                </div>
+                <div className="form-field form-field-full">
+                  <label className="field-label">备注（内部说明）</label>
+                  <textarea
+                    className="field-textarea"
+                    placeholder="给自己看的备注，可选"
+                    value={form.note}
+                    onChange={onChange("note")}
+                  />
+                </div>
+              </div>
 
-        <section style={{ marginTop: 32 }}>
-          <h2>3. 上传资源（icon / 桌面图标 / 截图 / APK / Banner）</h2>
-          <p>请确保已经有 App ID：{appId || "（还没有）"}</p>
+              <div className="form-actions">
+                <button className="btn-primary" onClick={createApp}>
+                  创建 / 更新 App
+                </button>
+                {appId && (
+                  <span className="muted">
+                    当前 App ID：<strong>{appId}</strong>
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
 
-          <select
-            value={fileType}
-            onChange={(e) => setFileType(e.target.value)}
-          >
-            <option value="apk">APK</option>
-            <option value="icon">安装页图标</option>
-            <option value="desktopIcon">桌面图标</option>
-            <option value="banner">顶部 Banner</option>
-            <option value="screenshot">Screenshot 截图</option>
-          </select>
-          <br />
-          <input type="file" onChange={(e) => setFile(e.target.files[0])} />
-          <br />
-          <button className="btn" onClick={uploadFile}>
-            上传文件
-          </button>
-        </section>
+          {/* 右侧：上传资源 + 日志 */}
+          <div className="admin-column">
+            <div className="card">
+              <h2 className="section-title">
+                3. 上传资源（Icon / 桌面图标 / 截图 / APK / Banner）
+              </h2>
+              <p className="muted">
+                请确保已经创建 App，当前 App ID：
+                {appId ? <strong>{appId}</strong> : "（还没有）"}
+              </p>
 
-        <section style={{ marginTop: 32 }}>
-          <h2>日志</h2>
-          <pre>{log}</pre>
-        </section>
+              <div className="form-field">
+                <label className="field-label">资源类型</label>
+                <select
+                  className="field-input"
+                  value={fileType}
+                  onChange={(e) => setFileType(e.target.value)}
+                >
+                  <option value="apk">APK</option>
+                  <option value="icon">安装页图标</option>
+                  <option value="desktopIcon">桌面图标</option>
+                  <option value="banner">顶部 Banner</option>
+                  <option value="screenshot">Screenshot 截图</option>
+                </select>
+              </div>
+
+              <div className="form-field">
+                <label className="field-label">选择文件</label>
+                <input
+                  className="field-input"
+                  type="file"
+                  onChange={(e) => setFile(e.target.files[0])}
+                />
+              </div>
+
+              <div className="form-actions">
+                <button className="btn-primary" onClick={uploadFile}>
+                  上传文件
+                </button>
+              </div>
+            </div>
+
+            <div className="card" style={{ marginTop: 16 }}>
+              <h2 className="section-title">日志</h2>
+              <pre className="log-box">{log}</pre>
+            </div>
+          </div>
+        </div>
       </div>
     </AdminLayout>
   );
