@@ -1,7 +1,6 @@
 // backend/uploadToGitHub.js
 const axios = require("axios");
 const { v4: uuid } = require("uuid");
-const FormData = require("form-data");
 
 module.exports = async function uploadToGitHub(file, folder) {
   const owner = process.env.GITHUB_OWNER;
@@ -18,22 +17,31 @@ module.exports = async function uploadToGitHub(file, folder) {
   // Step 1: 获取或创建 Release
   let release;
   try {
-    release = await axios.get(
+    const res = await axios.get(
       `https://api.github.com/repos/${owner}/${repo}/releases/tags/${releaseTag}`,
-      { headers: { Authorization: `Bearer ${token}` } }
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "User-Agent": "app-store-backend"
+        }
+      }
     );
-    release = release.data;
+    release = res.data;
   } catch (e) {
-    // Release 不存在 → 创建
     const res = await axios.post(
       `https://api.github.com/repos/${owner}/${repo}/releases`,
       {
         tag_name: releaseTag,
         name: "App Files Storage",
         draft: false,
-        prerelease: false,
+        prerelease: false
       },
-      { headers: { Authorization: `Bearer ${token}` } }
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "User-Agent": "app-store-backend"
+        }
+      }
     );
     release = res.data;
   }
@@ -49,7 +57,8 @@ module.exports = async function uploadToGitHub(file, folder) {
         Authorization: `Bearer ${token}`,
         "Content-Type": file.mimetype,
         "Content-Length": file.buffer.length,
-      },
+        "User-Agent": "app-store-backend"
+      }
     }
   );
 
