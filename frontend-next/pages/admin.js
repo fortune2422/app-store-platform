@@ -149,11 +149,25 @@ export default function Admin() {
           onChange={onChange("updatedAtLabel")}
         />
         <br />
-        <button className="btn" onClick={createApp}>
-          创建 / 更新 App
-        </button>
-        {appId && <p>当前 App ID：{appId}</p>}
-      </section>
+        {/* ✅ 新增：落地页域名 */}
+  <input
+    placeholder="落地页域名（如：go606-33.playxxx.xyz）"
+    value={form.landingDomain}
+    onChange={onChange("landingDomain")}
+  />
+  <br />
+  {/* 可选：备注 */}
+  <textarea
+    placeholder="备注（内部说明，可选）"
+    value={form.note}
+    onChange={onChange("note")}
+  />
+  <br />
+  <button className="btn" onClick={createApp}>
+    创建 / 更新 App
+  </button>
+  {appId && <p>当前 App ID：{appId}</p>}
+</section>
 
       <section style={{ marginTop: 32 }}>
         <h2>3. 上传资源（icon / 桌面图标 / 截图 / APK / Banner）</h2>
