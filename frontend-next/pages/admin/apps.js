@@ -1,6 +1,7 @@
 // frontend-next/pages/admin/apps.js
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Link from "next/link";
 import AdminLayout from "../../components/AdminLayout";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "";
@@ -120,22 +121,31 @@ export default function AppsList() {
                         : ""}
                     </td>
                     <td>
-                      <a
-                        className="btn"
-                        href={landingUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        style={{ marginRight: 8 }}
-                      >
-                        打开落地页
-                      </a>
-                      <button
-                        className="btn"
-                        onClick={() => copyToClipboard(landingUrl)}
-                      >
-                        复制链接
-                      </button>
-                    </td>
+                      <td>
+  <button
+    className="btn primary small"
+    onClick={() => {
+      window.open(`/app/${app.id}`, "_blank");
+    }}
+  >
+    打开落地页
+  </button>
+
+  <button
+    className="btn secondary small"
+    onClick={() => copyLink(app.id)}
+    style={{ marginLeft: 8 }}
+  >
+    复制链接
+  </button>
+
+  <Link href={`/admin?id=${app.id}`} legacyBehavior>
+    <a style={{ marginLeft: 8 }}>
+      <button className="btn secondary small">编辑</button>
+    </a>
+  </Link>
+</td>
+
                   </tr>
                 );
               })}
