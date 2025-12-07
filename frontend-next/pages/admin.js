@@ -1,6 +1,7 @@
 // frontend-next/pages/admin.js
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
+import { useRouter } from "next/router";
 import AdminLayout from "../components/AdminLayout";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "";
@@ -25,11 +26,72 @@ export default function Admin() {
   const [fileType, setFileType] = useState("apk");
   const [file, setFile] = useState(null);
   const [log, setLog] = useState("");
+  export default function Admin() {
+  const router = useRouter();
+
+  const [form, setForm] = useState({
+    name: "",
+    code: "",
+    packageName: "",
+    version: "",
+    description: "",
+    developerName: "",
+    rating: "4.8",
+    reviewsCount: "100",
+    downloadsLabel: "2M+",
+    sizeLabel: "25 MB",
+    updatedAtLabel: "",
+    landingDomain: "",
+    note: ""
+  });
+  const [appId, setAppId] = useState("");
+  const [fileType, setFileType] = useState("apk");
+  const [file, setFile] = useState(null);
+  const [log, setLog] = useState("");
+
+  // ✅ 如果 URL 带 ?id=，自动拉取已有 App 信息
+  useEffect(() => {
+    const id = router.query.id;
+    if (!id) return;
+
+    async function fetchApp() {
+      try {
+        const res = await axios.get(`${API_BASE}/${id}`);
+        const app = res.data.app;
+        if (!app) return;
+
+        setAppId(app.id);
+        setForm((prev) => ({
+          ...prev,
+          name: app.name || "",
+          code: app.code || "",
+          packageName: app.packageName || "",
+          version: app.version || "",
+          description: app.description || "",
+          developerName: app.developerName || "",
+          rating: app.rating != null ? String(app.rating) : "",
+          reviewsCount:
+            app.reviewsCount != null ? String(app.reviewsCount) : "",
+          downloadsLabel: app.downloadsLabel || "",
+          sizeLabel: app.sizeLabel || "",
+          updatedAtLabel: app.updatedAtLabel || "",
+          landingDomain: app.landingDomain || "",
+          note: app.note || ""
+        }));
+        setLog(`🔁 已加载 App（ID=${app.id}），可以编辑后保存`);
+      } catch (err) {
+        console.error(err);
+        setLog("❌ 加载失败：" + (err.response?.data?.error || err.message));
+      }
+    }
+
+    fetchApp();
+  }, [router.query.id]);
 
   const onChange = (key) => (e) =>
     setForm((prev) => ({ ...prev, [key]: e.target.value }));
 
-  async function createApp() {
+    async function createApp() {
     try {
       const payload = {
         ...form,
@@ -38,14 +100,24 @@ export default function Admin() {
           ? parseInt(form.reviewsCount, 10)
           : null
       };
-      const res = await axios.post(`${API_BASE}/create`, payload);
-      setAppId(res.data.app.id);
-      setLog(`✅ 创建成功，App ID = ${res.data.app.id}`);
+
+      let res;
+      if (appId) {
+        // ✅ 编辑已有 App：走 PUT /:id
+        res = await axios.put(`${API_BASE}/${appId}`, payload);
+        setLog(`✅ 已更新，App ID = ${res.data.app.id}`);
+      } else {
+        // ✅ 新建：走 POST /create
+        res = await axios.post(`${API_BASE}/create`, payload);
+        setAppId(res.data.app.id);
+        setLog(`✅ 创建成功，App ID = ${res.data.app.id}`);
+      }
     } catch (err) {
       console.error(err);
-      setLog("❌ 创建失败：" + (err.response?.data?.error || err.message));
+      setLog("❌ 创建 / 更新失败：" + (err.response?.data?.error || err.message));
     }
   }
+
 
   async function uploadFile() {
     if (!appId) return setLog("请先创建 App，拿到 appId");
