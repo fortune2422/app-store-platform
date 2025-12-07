@@ -1,7 +1,4 @@
 // backend/models/App.js
-// 注意：这里导出的是一个函数 (sequelize, DataTypes) => App
-// 由 models/index.js 调用并传入同一个 sequelize 实例
-
 module.exports = (sequelize, DataTypes) => {
   const App = sequelize.define("App", {
     // 基础信息
@@ -9,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     },
-    // 内部代码，例如：GO606-33
+    // 内部代码，例如 GO606-33，用来编号
     code: {
       type: DataTypes.STRING,
       allowNull: true
@@ -43,17 +40,23 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: 0
     },
     downloadsLabel: {
-      // 如："2M+"
+      // 如 "2M+"
       type: DataTypes.STRING,
       allowNull: true
     },
     sizeLabel: {
-      // 如："25 MB"
+      // 如 "25 MB"
       type: DataTypes.STRING,
       allowNull: true
     },
     updatedAtLabel: {
-      // 如："Dec 7, 2025"
+      // 如 "Dec 7, 2025"
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+
+    // ✅ 新增：每个应用的落地页域名（比如 go606-33.xxx）
+    landingDomain: {
       type: DataTypes.STRING,
       allowNull: true
     },
@@ -79,6 +82,12 @@ module.exports = (sequelize, DataTypes) => {
     },
     apkUrl: {
       type: DataTypes.STRING,
+      allowNull: true
+    },
+
+    // 可选：备注（你爱写什么写什么）
+    note: {
+      type: DataTypes.TEXT,
       allowNull: true
     }
   });
