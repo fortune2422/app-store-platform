@@ -6,27 +6,7 @@ import AdminLayout from "../components/AdminLayout";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "";
 
-export default function Admin() {
-  const [form, setForm] = useState({
-    name: "",
-    code: "",
-    packageName: "",
-    version: "",
-    description: "",
-    developerName: "",
-    rating: "4.8",
-    reviewsCount: "100",
-    downloadsLabel: "2M+",
-    sizeLabel: "25 MB",
-    updatedAtLabel: "",
-    landingDomain: "",
-    note: ""
-  });
-  const [appId, setAppId] = useState("");
-  const [fileType, setFileType] = useState("apk");
-  const [file, setFile] = useState(null);
-  const [log, setLog] = useState("");
-  export default function Admin() {
+function AdminPage() {
   const router = useRouter();
 
   const [form, setForm] = useState({
@@ -49,7 +29,7 @@ export default function Admin() {
   const [file, setFile] = useState(null);
   const [log, setLog] = useState("");
 
-  // ✅ 如果 URL 带 ?id=，自动拉取已有 App 信息
+  // ✅ 如果 URL 带 ?id=，自动拉取已有 App 信息（编辑模式）
   useEffect(() => {
     const id = router.query.id;
     if (!id) return;
@@ -61,8 +41,7 @@ export default function Admin() {
         if (!app) return;
 
         setAppId(app.id);
-        setForm((prev) => ({
-          ...prev,
+        setForm({
           name: app.name || "",
           code: app.code || "",
           packageName: app.packageName || "",
@@ -77,8 +56,8 @@ export default function Admin() {
           updatedAtLabel: app.updatedAtLabel || "",
           landingDomain: app.landingDomain || "",
           note: app.note || ""
-        }));
-        setLog(`🔁 已加载 App（ID=${app.id}），可以编辑后保存`);
+        });
+        setLog(`🔁 已加载 App（ID=${app.id}），现在是编辑模式`);
       } catch (err) {
         console.error(err);
         setLog("❌ 加载失败：" + (err.response?.data?.error || err.message));
@@ -91,7 +70,8 @@ export default function Admin() {
   const onChange = (key) => (e) =>
     setForm((prev) => ({ ...prev, [key]: e.target.value }));
 
-    async function createApp() {
+  // ✅ 新建 / 更新 App
+  async function createApp() {
     try {
       const payload = {
         ...form,
@@ -103,11 +83,11 @@ export default function Admin() {
 
       let res;
       if (appId) {
-        // ✅ 编辑已有 App：走 PUT /:id
+        // 编辑已有
         res = await axios.put(`${API_BASE}/${appId}`, payload);
         setLog(`✅ 已更新，App ID = ${res.data.app.id}`);
       } else {
-        // ✅ 新建：走 POST /create
+        // 新建
         res = await axios.post(`${API_BASE}/create`, payload);
         setAppId(res.data.app.id);
         setLog(`✅ 创建成功，App ID = ${res.data.app.id}`);
@@ -117,7 +97,6 @@ export default function Admin() {
       setLog("❌ 创建 / 更新失败：" + (err.response?.data?.error || err.message));
     }
   }
-
 
   async function uploadFile() {
     if (!appId) return setLog("请先创建 App，拿到 appId");
@@ -350,3 +329,5 @@ export default function Admin() {
     </AdminLayout>
   );
 }
+
+export default AdminPage;
