@@ -4,6 +4,9 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import AdminLayout from "../components/AdminLayout";
 
+const APPS_API = "/api/apps";
+const UPLOAD_API = process.env.NEXT_PUBLIC_API_BASE_URL || "";
+
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "";
 
 function AdminPage() {
@@ -36,7 +39,7 @@ function AdminPage() {
 
     async function fetchApp() {
       try {
-        const res = await axios.get(`${API_BASE}/${id}`);
+        const res = await axios.get(`${APPS_API}/${id}`);
         const app = res.data.app;
         if (!app) return;
 
@@ -71,32 +74,34 @@ function AdminPage() {
     setForm((prev) => ({ ...prev, [key]: e.target.value }));
 
   // ✅ 新建 / 更新 App
-  async function createApp() {
-    try {
-      const payload = {
-        ...form,
-        rating: form.rating ? parseFloat(form.rating) : null,
-        reviewsCount: form.reviewsCount
-          ? parseInt(form.reviewsCount, 10)
-          : null
-      };
+async function createApp() {
+  try {
+    const payload = {
+      ...form,
+      rating: form.rating ? parseFloat(form.rating) : null,
+      reviewsCount: form.reviewsCount
+        ? parseInt(form.reviewsCount, 10)
+        : null
+    };
 
-      let res;
-      if (appId) {
-        // 编辑已有
-        res = await axios.put(`${API_BASE}/${appId}`, payload);
-        setLog(`✅ 已更新，App ID = ${res.data.app.id}`);
-      } else {
-        // 新建
-        res = await axios.post(`${API_BASE}/create`, payload);
-        setAppId(res.data.app.id);
-        setLog(`✅ 创建成功，App ID = ${res.data.app.id}`);
-      }
-    } catch (err) {
-      console.error(err);
-      setLog("❌ 创建 / 更新失败：" + (err.response?.data?.error || err.message));
+    let res;
+    if (appId) {
+      // 编辑已有
+      res = await axios.put(`${APPS_API}/${appId}`, payload);
+      setLog(`✅ 已更新，App ID = ${res.data.app.id}`);
+    } else {
+      // 新建
+      res = await axios.post(APPS_API, payload);
+      setAppId(res.data.app.id);
+      setLog(`✅ 创建成功，App ID = ${res.data.app.id}`);
     }
+  } catch (err) {
+    console.error(err);
+    setLog(
+      "❌ 创建 / 更新失败：" + (err.response?.data?.error || err.message)
+    );
   }
+}
 
   async function uploadFile() {
     if (!appId) return setLog("请先创建 App，拿到 appId");
@@ -108,7 +113,7 @@ function AdminPage() {
       fd.append("appId", appId);
       fd.append("type", fileType); // apk | icon | screenshot | desktopIcon | banner
 
-      const res = await axios.post(`${API_BASE}/upload`, fd, {
+      const res = await axios.post(`${UPLOAD_API}/upload`, fd, {
         headers: { "Content-Type": "multipart/form-data" }
       });
 
