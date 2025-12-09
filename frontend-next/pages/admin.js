@@ -1,15 +1,14 @@
 // frontend-next/pages/admin.js
 import { useState, useEffect } from "react";
 import axios from "axios";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import AdminLayout from "../components/AdminLayout";
 
+// JSON 数据：用 Next 自己的 API Routes
 const APPS_API = "/api/apps";
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "";
+// 上传文件：仍然走后端（Render）
+// 比如：https://app-store-backend-xxx.onrender.com/api/apps
 const UPLOAD_API = process.env.NEXT_PUBLIC_API_BASE_URL || "";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "";
 
 function AdminPage() {
   const router = useRouter();
@@ -34,7 +33,7 @@ function AdminPage() {
   const [file, setFile] = useState(null);
   const [log, setLog] = useState("");
 
-  // ✅ 如果 URL 带 ?id=，自动拉取已有 App 信息（编辑模式）
+  // ✅ 如果 URL 带 ?id=xxx，自动进入编辑模式，加载现有 App
   useEffect(() => {
     const id = router.query.id;
     if (!id) return;
@@ -75,36 +74,37 @@ function AdminPage() {
   const onChange = (key) => (e) =>
     setForm((prev) => ({ ...prev, [key]: e.target.value }));
 
-  // ✅ 新建 / 更新 App
-async function createApp() {
-  try {
-    const payload = {
-      ...form,
-      rating: form.rating ? parseFloat(form.rating) : null,
-      reviewsCount: form.reviewsCount
-        ? parseInt(form.reviewsCount, 10)
-        : null
-    };
+  // ✅ 新建 / 更新 App（走 /api/apps）
+  async function createApp() {
+    try {
+      const payload = {
+        ...form,
+        rating: form.rating ? parseFloat(form.rating) : null,
+        reviewsCount: form.reviewsCount
+          ? parseInt(form.reviewsCount, 10)
+          : null
+      };
 
-    let res;
-    if (appId) {
-      // 编辑已有
-      res = await axios.put(`${APPS_API}/${appId}`, payload);
-      setLog(`✅ 已更新，App ID = ${res.data.app.id}`);
-    } else {
-      // 新建
-      res = await axios.post(APPS_API, payload);
-      setAppId(res.data.app.id);
-      setLog(`✅ 创建成功，App ID = ${res.data.app.id}`);
+      let res;
+      if (appId) {
+        // 编辑已有
+        res = await axios.put(`${APPS_API}/${appId}`, payload);
+        setLog(`✅ 已更新，App ID = ${res.data.app.id}`);
+      } else {
+        // 新建
+        res = await axios.post(APPS_API, payload);
+        setAppId(res.data.app.id);
+        setLog(`✅ 创建成功，App ID = ${res.data.app.id}`);
+      }
+    } catch (err) {
+      console.error(err);
+      setLog(
+        "❌ 创建 / 更新失败：" + (err.response?.data?.error || err.message)
+      );
     }
-  } catch (err) {
-    console.error(err);
-    setLog(
-      "❌ 创建 / 更新失败：" + (err.response?.data?.error || err.message)
-    );
   }
-}
 
+  // ✅ 上传 icon / screenshot / APK / banner（仍然走后端 UPLOAD_API）
   async function uploadFile() {
     if (!appId) return setLog("请先创建 App，拿到 appId");
     if (!file) return setLog("请先选择文件");
