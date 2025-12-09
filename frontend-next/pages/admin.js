@@ -1,10 +1,12 @@
 // frontend-next/pages/admin.js
 import { useState, useEffect } from "react";
 import axios from "axios";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import AdminLayout from "../components/AdminLayout";
 
 const APPS_API = "/api/apps";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "";
 const UPLOAD_API = process.env.NEXT_PUBLIC_API_BASE_URL || "";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "";
