@@ -1,34 +1,32 @@
 // frontend-next/lib/models/App.js
-const { DataTypes } = require("sequelize");
-const sequelize = require("../sequelize");
+import { DataTypes } from "sequelize";
+import sequelize from "../db";
 
-const App = sequelize.define("App", {
-  name: DataTypes.STRING,
-  code: DataTypes.STRING,
-  packageName: DataTypes.STRING,
-  version: DataTypes.STRING,
-  description: DataTypes.TEXT,
-  developerName: DataTypes.STRING,
-  rating: DataTypes.FLOAT,
-  reviewsCount: DataTypes.INTEGER,
-  downloadsLabel: DataTypes.STRING,
-  sizeLabel: DataTypes.STRING,
-  updatedAtLabel: DataTypes.STRING,
-
-  iconUrl: DataTypes.STRING,
-  desktopIconUrl: DataTypes.STRING,
-  bannerUrl: DataTypes.STRING,
-
-  // 用数组存截图 URL
-  screenshots: {
-    type: DataTypes.ARRAY(DataTypes.STRING),
-    defaultValue: []
+const App = sequelize.define(
+  "App",
+  {
+    name: DataTypes.STRING,
+    code: DataTypes.STRING,
+    packageName: DataTypes.STRING,
+    version: DataTypes.STRING,
+    description: DataTypes.TEXT,
+    developerName: DataTypes.STRING,
+    rating: DataTypes.FLOAT,
+    reviewsCount: DataTypes.INTEGER,
+    downloadsLabel: DataTypes.STRING,
+    sizeLabel: DataTypes.STRING,
+    updatedAtLabel: DataTypes.STRING,
+    landingDomain: DataTypes.STRING,
+    iconUrl: DataTypes.STRING,
+    desktopIconUrl: DataTypes.STRING,
+    bannerUrl: DataTypes.STRING,
+    screenshots: DataTypes.ARRAY(DataTypes.TEXT),
+    apkUrl: DataTypes.STRING,
+    note: DataTypes.TEXT
   },
+  {
+    tableName: "Apps"
+  }
+);
 
-  apkUrl: DataTypes.STRING,
-
-  landingDomain: DataTypes.STRING,
-  note: DataTypes.TEXT
-});
-
-module.exports = App;
+export default App;
