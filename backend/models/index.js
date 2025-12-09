@@ -1,11 +1,19 @@
+// backend/models/index.js
+const sequelize = require("../sequelize");
+const App = require("./App");
 
-const { Sequelize, DataTypes } = require("sequelize");
+async function initDb() {
+  try {
+    await sequelize.authenticate();
+    console.log("Database connected.");
+  } catch (err) {
+    console.error("DB connection failed:", err);
+  }
+}
 
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
-  dialect: "postgres",
-  logging: false
-});
+initDb();
 
-const App = require("./App")(sequelize, DataTypes);
-
-module.exports = { sequelize, App };
+module.exports = {
+  sequelize,
+  App
+};
