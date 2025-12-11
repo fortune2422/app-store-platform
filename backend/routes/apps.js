@@ -1,7 +1,7 @@
 // backend/routes/apps.js
 const express = require("express");
 const multer = require("multer");
-const { uploadBufferToR2 } = require("../uploadToR2"); // 我们之前写好的上传模块
+const { uploadBufferToR2 } = require("../uploadToR2"); // 你的 uploadToR2.js 导出 uploadBufferToR2
 const { App } = require("../models");
 
 const router = express.Router();
@@ -17,11 +17,9 @@ router.post("/create", async (req, res) => {
   }
 });
 
-// 上传资源（文件通过 multipart/form-data 上传）
 router.post("/upload", upload.single("file"), async (req, res) => {
   try {
     const { appId, type } = req.body;
-
     if (!req.file) return res.status(400).json({ error: "no file provided" });
     if (!appId) return res.status(400).json({ error: "no appId provided" });
 
@@ -30,7 +28,6 @@ router.post("/upload", upload.single("file"), async (req, res) => {
 
     console.log("Uploading file for app:", appId, "type:", type, "name:", req.file.originalname);
 
-    // 上传到 R2，folder 用 type 区分
     const folder = type || "files";
     const { publicUrl, key } = await uploadBufferToR2(
       req.file.buffer,
@@ -39,20 +36,29 @@ router.post("/upload", upload.single("file"), async (req, res) => {
       folder
     );
 
-    // 根据 type 保存不同字段
-    if (type === "apk") app.apkUrl = publicUrl;
-    else if (type === "icon") app.iconUrl = publicUrl;
-    else if (type === "desktopIcon") app.desktopIconUrl = publicUrl;
-    else if (type === "banner") app.bannerUrl = publicUrl;
-    else if (type === "screenshot") {
+    // 保存 publicUrl 和 key，key 用于签名下载（私有 bucket）
+    if (type === "apk") {
+      app.apkUrl = publicUrl;
+      app.apkKey = key;
+    } else if (type === "icon") {
+      app.iconUrl = publicUrl;
+      app.iconKey = key;
+    } else if (type === "desktopIcon") {
+      app.desktopIconUrl = publicUrl;
+      app.desktopIconKey = key;
+    } else if (type === "banner") {
+      app.bannerUrl = publicUrl;
+      app.bannerKey = key;
+    } else if (type === "screenshot") {
       app.screenshots = [...(app.screenshots || []), publicUrl];
+      app.screenshotKeys = [...(app.screenshotKeys || []), key];
     } else {
-      // 默认也放到 screenshots（可按需改）
+      // 兼容：把其当 screenshot 存
       app.screenshots = [...(app.screenshots || []), publicUrl];
+      app.screenshotKeys = [...(app.screenshotKeys || []), key];
     }
 
     await app.save();
-
     console.log("Upload success, url =", publicUrl);
     res.json({ url: publicUrl, key, app });
   } catch (e) {
@@ -82,7 +88,6 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// 更新应用
 router.put("/:id", async (req, res) => {
   try {
     const app = await App.findByPk(req.params.id);
