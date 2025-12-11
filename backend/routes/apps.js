@@ -20,47 +20,37 @@ router.post("/create", async (req, res) => {
 router.post("/upload", upload.single("file"), async (req, res) => {
   try {
     const { appId, type } = req.body;
-    if (!req.file) return res.status(400).json({ error: "no file provided" });
-    if (!appId) return res.status(400).json({ error: "no appId provided" });
-
     const app = await App.findByPk(appId);
     if (!app) return res.status(404).json({ error: "app not found" });
 
-    const folder = type || "files";
-    const { publicUrl, key } = await uploadBufferToR2(
+    if (!req.file) return res.status(400).json({ error: "no file" });
+
+    console.log("Uploading file to R2:", appId, type, req.file.originalname);
+
+    const { publicUrl } = await uploadBufferToR2(
       req.file.buffer,
       req.file.originalname,
       req.file.mimetype,
-      folder
+      type
     );
 
-    if (type === "apk") {
-      app.apkUrl = publicUrl;
-      app.apkKey = key;
-    } else if (type === "icon") {
-      app.iconUrl = publicUrl;
-      app.iconKey = key;
-    } else if (type === "desktopIcon") {
-      app.desktopIconUrl = publicUrl;
-      app.desktopIconKey = key;
-    } else if (type === "banner") {
-      app.bannerUrl = publicUrl;
-      app.bannerKey = key;
-    } else if (type === "screenshot") {
+    if (type === "apk") app.apkUrl = publicUrl;
+    if (type === "icon") app.iconUrl = publicUrl;
+    if (type === "desktopIcon") app.desktopIconUrl = publicUrl;
+    if (type === "banner") app.bannerUrl = publicUrl;
+    if (type === "screenshot") {
       app.screenshots = [...(app.screenshots || []), publicUrl];
-      app.screenshotKeys = [...(app.screenshotKeys || []), key];
-    } else {
-      app.screenshots = [...(app.screenshots || []), publicUrl];
-      app.screenshotKeys = [...(app.screenshotKeys || []), key];
     }
 
     await app.save();
-    res.json({ url: publicUrl, key, app });
+
+    res.json({ url: publicUrl, app });
   } catch (e) {
     console.error("Upload error:", e);
     res.status(500).json({ error: e.message || "upload failed" });
   }
 });
+
 
 router.get("/list", async (req, res) => {
   try {
