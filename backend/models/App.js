@@ -22,6 +22,17 @@ const App = sequelize.define(
     bannerUrl: DataTypes.STRING,
     screenshots: DataTypes.ARRAY(DataTypes.TEXT),
     apkUrl: DataTypes.STRING,
+    apkKey: { type: DataTypes.STRING },         // R2 object key
+    iconKey: { type: DataTypes.STRING },
+    desktopIconKey: { type: DataTypes.STRING },
+    bannerKey: { type: DataTypes.STRING },
+    screenshotKeys: { type: DataTypes.ARRAY(DataTypes.STRING) }, // Postgres array
+    apkUrl: { type: DataTypes.STRING },          // public url
+    iconUrl: { type: DataTypes.STRING },
+    desktopIconUrl: { type: DataTypes.STRING },
+    bannerUrl: { type: DataTypes.STRING },
+    screenshots: { type: DataTypes.ARRAY(DataTypes.STRING) },
+
     note: DataTypes.TEXT
   },
   {
