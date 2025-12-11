@@ -16,8 +16,9 @@ app.use(express.json());
 
 app.use("/api/apps", require("./routes/apps"));
 
-sequelize.sync().then(() => {
+sequelize.sync({ alter: true }).then(() => {
   app.listen(config.PORT, () =>
     console.log("Backend running on port", config.PORT)
   );
 });
+
