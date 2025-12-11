@@ -40,6 +40,8 @@ router.post("/upload", upload.single("file"), async (req, res) => {
     if (type === "banner") app.bannerUrl = publicUrl;
     if (type === "screenshot") {
       app.screenshots = [...(app.screenshots || []), publicUrl];
+app.screenshotKeys_jsonb = [...(app.screenshotKeys_jsonb || []), key];
+
     }
 
     await app.save();
