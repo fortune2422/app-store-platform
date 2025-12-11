@@ -1,7 +1,7 @@
 // backend/routes/apps.js
 const express = require("express");
 const multer = require("multer");
-const { uploadBufferToR2 } = require("../uploadToR2"); // 你的 uploadToR2.js 导出 uploadBufferToR2
+const { uploadBufferToR2 } = require("../uploadToR2");
 const { App } = require("../models");
 
 const router = express.Router();
@@ -26,8 +26,6 @@ router.post("/upload", upload.single("file"), async (req, res) => {
     const app = await App.findByPk(appId);
     if (!app) return res.status(404).json({ error: "app not found" });
 
-    console.log("Uploading file for app:", appId, "type:", type, "name:", req.file.originalname);
-
     const folder = type || "files";
     const { publicUrl, key } = await uploadBufferToR2(
       req.file.buffer,
@@ -36,7 +34,6 @@ router.post("/upload", upload.single("file"), async (req, res) => {
       folder
     );
 
-    // 保存 publicUrl 和 key，key 用于签名下载（私有 bucket）
     if (type === "apk") {
       app.apkUrl = publicUrl;
       app.apkKey = key;
@@ -53,13 +50,11 @@ router.post("/upload", upload.single("file"), async (req, res) => {
       app.screenshots = [...(app.screenshots || []), publicUrl];
       app.screenshotKeys = [...(app.screenshotKeys || []), key];
     } else {
-      // 兼容：把其当 screenshot 存
       app.screenshots = [...(app.screenshots || []), publicUrl];
       app.screenshotKeys = [...(app.screenshotKeys || []), key];
     }
 
     await app.save();
-    console.log("Upload success, url =", publicUrl);
     res.json({ url: publicUrl, key, app });
   } catch (e) {
     console.error("Upload error:", e);
