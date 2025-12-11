@@ -1,5 +1,8 @@
 // backend/models/index.js
+const fs = require("fs");
+const path = require("path");
 const sequelize = require("../sequelize");
+const config = require("../config");
 const App = require("./App");
 const Domain = require("./Domain")(sequelize, Sequelize.DataTypes);
 db.Domain = Domain;
