@@ -28,7 +28,7 @@ async function uploadBufferToR2(fileBuffer, originalName, contentType, folder = 
   // 最终对外访问 URL 可以直接用 PUBLIC_BASE + /key
   if (PUBLIC_BASE) {
     return {
-      publicUrl: `${PUBLIC_BASE}/${encodeURI(key)}`,
+      publicUrl: `${PUBLIC_BASE}/${encodeURIComponent(key)}`,
       key
     };
   }
@@ -36,7 +36,7 @@ async function uploadBufferToR2(fileBuffer, originalName, contentType, folder = 
   // 如果没有 custom domain，可以通过 R2 endpoint (account-based)
   const endpoint = process.env.R2_ENDPOINT || `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`;
   return {
-    publicUrl: `${endpoint}/${BUCKET}/${encodeURI(key)}`,
+    publicUrl: `${PUBLIC_BASE}/${encodeURIComponent(key)}`,
     key
   };
 }
