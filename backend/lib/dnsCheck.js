@@ -2,39 +2,41 @@
 const dns = require("dns").promises;
 
 /**
- * checkCnamePointingToR2
- * - domain: 'dl.example.com' or 'example.com'
- * - r2TargetSubstr: a substring of the R2 account endpoint (like 'r2.cloudflarestorage.com' or the exact target)
- *
- * returns: { ok: boolean, message: string, cname?: string[] }
+ * 检查指定域名的 TXT 记录是否包含 token
+ * @param {string} domain - 用户域名，如 example.com
+ * @param {string} token - 验证 token（我们要求用户把 token 放在 TXT _appstore-verification.domain）
+ * @returns {Promise<{ok:boolean, details:string}>}
  */
-async function checkCnamePointingTo(domain, r2TargetSubstr) {
+async function checkTxtToken(domain, token) {
+  // 我们建议用户把 TXT 记录放在 _appstore-verification.<domain>
+  const txtHost = `_appstore-verification.${domain}`;
   try {
-    // try CNAME first
-    const cnames = await dns.resolveCname(domain).catch(() => null);
-    if (cnames && cnames.length) {
-      const matched = cnames.some((c) => c.includes(r2TargetSubstr));
-      return {
-        ok: matched,
-        message: matched
-          ? `CNAME points to ${r2TargetSubstr}`
-          : `CNAME exists but does not point to ${r2TargetSubstr}. Found: ${cnames.join(", ")}`,
-        cname: cnames
-      };
-    }
-
-    // if no CNAME, also check A record as fallback
-    const as = await dns.resolve4(domain).catch(() => null);
-    if (as && as.length) {
-      return { ok: false, message: `Domain has A records (${as.join(", ")}). R2 custom domain normally requires a CNAME to R2 target.` };
-    }
-
-    return { ok: false, message: "No CNAME or A records found for domain." };
+    const records = await dns.resolveTxt(txtHost);
+    // records is array of arrays of strings
+    const flat = records.flat().join(" ");
+    const ok = flat.includes(token);
+    return { ok, details: `TXT ${txtHost} => ${JSON.stringify(records)}` };
   } catch (err) {
-    return { ok: false, message: `DNS check failed: ${err.message}` };
+    return { ok: false, details: `TXT lookup error: ${err.code || err.message}` };
+  }
+}
+
+/**
+ * 可选：检查 domain 是否 CNAME 指向我们提供的目标（如果你想用 CNAME 验证）
+ * @param {string} domain
+ * @param {string} expectedTarget
+ */
+async function checkCname(domain, expectedTarget) {
+  try {
+    const cnames = await dns.resolveCname(domain);
+    const ok = cnames.some(c => c === expectedTarget || c.endsWith(expectedTarget));
+    return { ok, details: `CNAME => ${JSON.stringify(cnames)}` };
+  } catch (err) {
+    return { ok: false, details: `CNAME lookup error: ${err.code || err.message}` };
   }
 }
 
 module.exports = {
-  checkCnamePointingTo
+  checkTxtToken,
+  checkCname
 };
